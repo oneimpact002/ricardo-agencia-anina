@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@400;500;700;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens ─────────────────────────────────────────── */
+@layer base {
+  :root {
+    --gradient-title: linear-gradient(90deg, #131B54 0%, #253FF6 100%);
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Red Hat Display", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: #fff;
+    color: #0B0C0C;
+  }
+
+  #root { min-height: 100vh; }
+}
+
+/* ─── Utilitários de Design System ──────────────────────────── */
+@layer components {
+
+  /* Título com gradiente — aplica em qualquer h2/p/span */
+  .title-gradient {
+    background: var(--gradient-title);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Padding padrão de seção */
+  .section-pad {
+    @apply py-20 md:py-28;
+  }
+
+  /* Container com largura máxima */
+  .container-content {
+    @apply max-w-content mx-auto px-6;
+  }
+
+  /* Card que sobe por cima da seção anterior */
+  .card-slide {
+    border-radius: 24px 24px 0 0;
+    position: relative;
+  }
+  .card-slide-shadow {
+    box-shadow: 0 -24px 60px rgba(0,0,0,0.18);
+  }
+}
+
+/* ─── Animações ──────────────────────────────────────────────── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+}
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(18px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+}
+
+@keyframes bubble-float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-10px); }
+}
+
+@keyframes highlight-sweep {
+  from { background-size: 0% 100%; }
+  to   { background-size: 100% 100%; }
+}
+
+/* Classe de animação genérica — adiciona em qualquer elemento */
+.anim {
+  opacity: 0;
+}
+.anim.visible {
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+/* Delay por data-attribute: <div class="anim" data-delay="1"> */
+.anim[data-delay="1"].visible { animation-delay: 0.1s; }
+.anim[data-delay="2"].visible { animation-delay: 0.2s; }
+.anim[data-delay="3"].visible { animation-delay: 0.3s; }
+.anim[data-delay="4"].visible { animation-delay: 0.4s; }
+.anim[data-delay="5"].visible { animation-delay: 0.5s; }
+.anim[data-delay="6"].visible { animation-delay: 0.6s; }
+
+/* Palavras com stagger (hero) */
+.stagger-word {
+  opacity: 0;
+  animation: stagger-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.stagger-fade {
+  opacity: 0;
+  animation: fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Highlight sweep */
+.hl-sweep {
+  display: inline;
+  background-image: linear-gradient(#E8F871, #E8F871);
+  background-repeat: no-repeat;
+  background-position: 0% 50%;
+  background-size: 0% 100%;
+  border-radius: 4px;
+  padding: 2px 6px;
+  -webkit-box-decoration-break: clone;
+}
+.hl-sweep.visible {
+  animation: highlight-sweep 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+}
+/* Quando usado junto com .anim, roda os dois: opacidade + sweep */
+.hl-sweep.anim.visible {
+  animation:
+    fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+    highlight-sweep 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+}
