@@ -103,11 +103,11 @@ function App() {
         <SubHero />
       </div>
 
-      {/* Snap 2 — Stats */}
-      <div id="s2"><Stats /></div>
+      {/* Snap 2 — ResponseChart */}
+      <div id="s2"><ResponseChart /></div>
 
-      {/* Snap 3 — ResponseChart */}
-      <div id="s3"><ResponseChart /></div>
+      {/* Snap 3 — Stats */}
+      <div id="s3"><Stats /></div>
     </div>
   );
 }
