@@ -125,3 +125,16 @@
     fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards,
     highlight-sweep 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
 }
+
+/* Desativa animações no mobile */
+@media (max-width: 767px) {
+  .anim,
+  .stagger-word,
+  .stagger-fade,
+  .hl-sweep {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+    background-size: 100% 100% !important;
+  }
+}

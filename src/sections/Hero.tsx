@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const words = [
   { w: "mas",         hi: false },
@@ -20,6 +20,7 @@ const bubbles = [
 ];
 
 export default function Hero() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <section className="relative w-full bg-white overflow-hidden h-auto md:h-[590px]">
 
@@ -52,22 +53,37 @@ export default function Hero() {
       <header className="absolute top-0 left-0 right-0 z-50 px-4 pt-4">
         <div className="container-content">
           <div className="flex items-center justify-between h-14 px-5 bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
-            <a href="#"><img src="/logo-anina-azul.png" alt="Anina" className="h-7 w-auto" /></a>
+            <a href="#" className="flex-shrink-0"><img src="/logo-anina-azul.png" alt="Anina" className="h-7 w-auto object-contain" /></a>
             <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-brand-dark/60">
               <a href="#"        className="hover:text-brand-dark transition-colors">Início</a>
               <a href="#sobre"   className="hover:text-brand-dark transition-colors">Sobre</a>
               <a href="#metodo"  className="hover:text-brand-dark transition-colors">Método</a>
               <a href="#contato" className="hover:text-brand-dark transition-colors">Contato</a>
             </nav>
-            <a href="#contato" className="bg-brand-dark text-white text-sm font-medium px-5 py-2 rounded-[5px] hover:bg-black transition-colors">
+            <a href="#contato" className="hidden md:inline-flex bg-brand-dark text-white text-sm font-medium px-5 py-2 rounded-[5px] hover:bg-black transition-colors">
               Entre em contato
             </a>
+            <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden flex flex-col justify-center items-center w-8 h-8 gap-1.5">
+              <span className={`block w-6 h-0.5 bg-brand-dark transition-all ${menuOpen ? "rotate-45 translate-y-2" : ""}`} />
+              <span className={`block w-6 h-0.5 bg-brand-dark transition-all ${menuOpen ? "opacity-0" : ""}`} />
+              <span className={`block w-6 h-0.5 bg-brand-dark transition-all ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`} />
+            </button>
           </div>
+          {menuOpen && (
+            <div className="md:hidden mt-2 bg-white rounded-2xl shadow-[0_4px_24px_rgba(0,0,0,0.08)] px-5 py-4 flex flex-col gap-4 text-sm font-medium text-brand-dark/60">
+              <a href="#"        onClick={() => setMenuOpen(false)} className="hover:text-brand-dark transition-colors">Início</a>
+              <a href="#sobre"   onClick={() => setMenuOpen(false)} className="hover:text-brand-dark transition-colors">Sobre</a>
+              <a href="#metodo"  onClick={() => setMenuOpen(false)} className="hover:text-brand-dark transition-colors">Método</a>
+              <a href="#contato" onClick={() => setMenuOpen(false)} className="hover:text-brand-dark transition-colors">Contato</a>
+            </div>
+          )}
         </div>
       </header>
 
-      {/* Conteúdo */}
-      <div className="relative z-10 container-content flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 pt-[80px] pb-10 md:pt-[75px] md:pb-[80px]">
+      {/* Padding mobile — edite aqui para mobile */}
+      <div className="px-[20px] pt-[120px] pb-[20px] md:p-0">
+      {/* Conteúdo — padding desktop abaixo (md:pt / md:pb) */}
+      <div className="relative z-10 container-content flex flex-col md:flex-row items-start md:items-center gap-[80px] md:gap-[20px] md:pt-[75px] md:pb-[80px]">
 
         {/* Texto */}
         <div className="flex-1 min-w-0 md:-mt-[50px]">
@@ -136,6 +152,7 @@ export default function Hero() {
           ))}
         </div>
 
+      </div>
       </div>
 
     </section>
