@@ -16,7 +16,7 @@ export default {
         sans: ["Red Hat Display", "system-ui", "sans-serif"],
       },
       maxWidth: {
-        content: "1200px",
+        content: "1140px",
       },
     },
   },

@@ -21,7 +21,7 @@ const bubbles = [
 
 export default function Hero() {
   return (
-    <section className="relative w-full bg-white overflow-hidden" style={{ height: 700 }}>
+    <section className="relative w-full bg-white overflow-hidden" style={{ height: 650 }}>
 
       {/* Fundo SVG */}
       <svg
@@ -67,7 +67,7 @@ export default function Hero() {
       </header>
 
       {/* Conteúdo — dois colunas */}
-      <div className="relative z-10 container-content flex items-center gap-8" style={{ paddingTop: 120, paddingBottom: 80 }}>
+      <div className="relative z-10 container-content flex items-center gap-8" style={{ paddingTop: 75, paddingBottom: 80 }}>
 
         {/* Esquerda — texto */}
         <div className="flex-1 min-w-0">

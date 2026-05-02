@@ -12,6 +12,8 @@
   html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
+    overflow: hidden;
     font-family: "Red Hat Display", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     background: #fff;
@@ -61,6 +63,11 @@
 @keyframes stagger-in {
   from { opacity: 0; transform: translateY(18px); filter: blur(4px); }
   to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes bubble-float {
