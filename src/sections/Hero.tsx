@@ -21,7 +21,7 @@ const bubbles = [
 
 export default function Hero() {
   return (
-    <section className="relative w-full bg-white overflow-hidden" style={{ height: 650 }}>
+    <section className="relative w-full bg-white overflow-hidden h-auto md:h-[590px]">
 
       {/* Fundo SVG */}
       <svg
@@ -66,25 +66,25 @@ export default function Hero() {
         </div>
       </header>
 
-      {/* Conteúdo — dois colunas */}
-      <div className="relative z-10 container-content flex items-center gap-8" style={{ paddingTop: 75, paddingBottom: 80 }}>
+      {/* Conteúdo */}
+      <div className="relative z-10 container-content flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-8 pt-[80px] pb-10 md:pt-[75px] md:pb-[80px]">
 
-        {/* Esquerda — texto */}
-        <div className="flex-1 min-w-0">
+        {/* Texto */}
+        <div className="flex-1 min-w-0 md:-mt-[50px]">
           <div
             className="inline-flex items-center rounded-full border border-[#767676] bg-[rgba(58,58,58,0.46)] stagger-fade"
-            style={{ padding: "10px 20px", marginBottom: 24, animationDelay: "0s" }}
+            style={{ padding: "10px 20px", marginBottom: 20, animationDelay: "0s" }}
           >
             <span className="text-white font-normal uppercase tracking-[0.12em]" style={{ fontSize: 10 }}>
               Automações inteligentes para clínicas e consultórios
             </span>
           </div>
 
-          <p className="stagger-fade text-white font-normal leading-snug" style={{ fontSize: 20, marginBottom: 6, animationDelay: "0.1s" }}>
+          <p className="stagger-fade text-white font-normal leading-snug" style={{ fontSize: 18, marginBottom: 6, animationDelay: "0.1s" }}>
             Seu WhatsApp recebe pacientes todos os dias...
           </p>
 
-          <p className="font-bold text-white" style={{ fontSize: 36, lineHeight: "110%", marginBottom: 16, maxWidth: 500  }}>
+          <p className="font-bold text-white" style={{ fontSize: 32, lineHeight: "110%", marginBottom: 14, maxWidth: 450 }}>
             {words.map(({ w, hi }, i) => (
               <React.Fragment key={i}>
                 <span className="inline-block stagger-word" style={{ animationDelay: `${0.55 + i * 0.048}s`, color: hi ? "#E8F871" : "white" }}>
@@ -95,34 +95,38 @@ export default function Hero() {
             ))}
           </p>
 
-          <p className="stagger-fade text-white leading-relaxed" style={{ fontSize: 17, fontWeight: 400, animationDelay: "1.1s", marginBottom: 28, maxWidth: 480 }}>
+          <p
+            className="stagger-fade text-white leading-relaxed md:max-w-[480px]"
+            style={{ fontSize: 15, fontWeight: 400, animationDelay: "1.1s", marginBottom: 24 }}
+          >
             Demora na resposta, falta de acompanhamento e um processo desorganizado fazem você perder pacientes todos os dias.
           </p>
 
           <div className="stagger-fade" style={{ animationDelay: "1.4s" }}>
             <a
               href="#contato"
-              className="inline-flex items-center justify-center font-normal text-black hover:opacity-90 rounded-[5px] transition-opacity"
-              style={{ fontSize: 17, padding: "16px 28px", background: "#E8F871", minWidth: 340 }}
+              className="inline-flex w-full md:w-auto md:min-w-[340px] items-center justify-center font-normal text-black hover:opacity-90 rounded-[5px] transition-opacity"
+              style={{ fontSize: 16, padding: "14px 28px", background: "#E8F871" }}
             >
               Quero parar de perder pacientes
             </a>
           </div>
         </div>
 
-        {/* Direita — celular + balões */}
-        <div className="relative flex-shrink-0 flex items-center justify-center" style={{ width: 520, height: 535 }}>
+        {/* Foto */}
+        <div className="relative flex-shrink-0 flex items-center justify-center w-full md:w-[500px] h-[300px] md:h-[535px]">
           <img
-            src="/hero-phone.webp"
+            src="/hero-photo.webp"
             alt="Automação de atendimento"
             className="relative z-10 h-full w-auto object-contain drop-shadow-2xl"
+            style={{ marginTop: -30 }}
           />
           {bubbles.map(({ src, style, delay, dur }, i) => (
             <img
               key={i}
               src={src}
               alt=""
-              className="absolute z-20 w-56"
+              className="absolute z-20 w-56 hidden md:block"
               style={{
                 ...style,
                 animation: `bubble-float ${dur} ease-in-out ${delay} infinite`,
