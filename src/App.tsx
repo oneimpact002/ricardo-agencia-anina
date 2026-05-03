@@ -4,8 +4,10 @@ import SubHero from "./sections/SubHero";
 import Stats from "./sections/Stats";
 import ResponseChart from "./sections/ResponseChart";
 import TruthSection from "./sections/TruthMorphSection";
+import Section5 from "./sections/Section5";
+import Section6 from "./sections/Section6";
 
-const SNAP_IDS = ["s1", "s2", "s3", "s4"];
+const SNAP_IDS = ["s1", "s2", "s3", "s4", "s5", "s6"];
 
 function getSnapTop(id: string, c: HTMLElement): number {
   const el = document.getElementById(id);
@@ -51,11 +53,11 @@ function App() {
 
   const scrollDown = useCallback(() => {
     if (locked.current) return;
-    // Em s4: primeiro scroll revela 4b, segundo não faz nada (fim)
-    if (currentIdx.current === SNAP_IDS.length - 1) {
-      if (!s4bVisible.current) { s4bVisible.current = true; revealFn.current?.(); }
-      return;
+    // Em s4: primeiro scroll revela 4b, depois avança para s5
+    if (currentIdx.current === 3) {
+      if (!s4bVisible.current) { s4bVisible.current = true; revealFn.current?.(); return; }
     }
+    if (currentIdx.current === SNAP_IDS.length - 1) return;
     goto(currentIdx.current + 1);
   }, [goto]);
 
@@ -118,6 +120,14 @@ function App() {
   }, [scrollDown, scrollUp]);
 
   return (
+    <>
+      {/* Textura global de dots — fixa, cobre todo o viewport */}
+      <div style={{
+        position: "fixed", inset: 0, zIndex: 9999, pointerEvents: "none",
+        backgroundImage: "radial-gradient(circle, rgba(154, 209, 255, 0.12) 1.5px, transparent 0)",
+        backgroundSize: "28px 28px",
+      }} />
+
     <div
       ref={containerRef}
       className="bg-white text-brand-dark font-sans"
@@ -127,7 +137,10 @@ function App() {
       <div id="s2"><ResponseChart /></div>
       <div id="s3"><Stats /></div>
       <TruthSection onRevealReady={onRevealReady} />
+      <Section5 />
+      <Section6 />
     </div>
+    </>
   );
 }
 
