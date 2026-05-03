@@ -126,6 +126,9 @@
     highlight-sweep 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
 }
 
+/* Morph words — começam invisíveis, animam via JS */
+.morph-word { opacity: 0; }
+
 /* Desativa animações no mobile */
 @media (max-width: 767px) {
   .anim,

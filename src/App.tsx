@@ -3,13 +3,14 @@ import Hero from "./sections/Hero";
 import SubHero from "./sections/SubHero";
 import Stats from "./sections/Stats";
 import ResponseChart from "./sections/ResponseChart";
+import TruthMorphSection from "./sections/TruthMorphSection";
 
-const SNAP_IDS = ["s1", "s2", "s3"];
+const SNAP_IDS = ["s1", "s2", "s3", "s4"];
 
 function getSnapTop(id: string, c: HTMLElement): number {
   const el = document.getElementById(id);
   if (!el) return 0;
-  return el.getBoundingClientRect().top - c.getBoundingClientRect().top + c.scrollTop;
+  return Math.round(el.getBoundingClientRect().top - c.getBoundingClientRect().top + c.scrollTop);
 }
 
 function App() {
@@ -45,11 +46,17 @@ function App() {
     const c = containerRef.current;
     if (!c) return;
     const update = () => {
+      if (locked.current) return;
+      const s4 = getSnapTop("s4", c);
+      if (c.scrollTop >= s4) return; // dentro da zona morph — não altera índice
+
       const s2 = getSnapTop("s2", c);
       const s3 = getSnapTop("s3", c);
-      if      (c.scrollTop < s2) currentIdx.current = 0;
-      else if (c.scrollTop < s3) currentIdx.current = 1;
-      else                        currentIdx.current = 2;
+
+      if      (c.scrollTop < s2)      currentIdx.current = 0;
+      else if (c.scrollTop < s3)      currentIdx.current = 1;
+      else if (c.scrollTop < s3 + 20) currentIdx.current = 2; // no snap de s3
+      else                             currentIdx.current = 3; // entre s3 e s4 → trata como "vindo de s4"
     };
     c.addEventListener("scroll", update, { passive: true });
     return () => c.removeEventListener("scroll", update);
@@ -59,6 +66,7 @@ function App() {
     const c = containerRef.current;
     if (!c) return;
     const onWheel = (e: WheelEvent) => {
+      if (c.scrollTop >= getSnapTop("s4", c)) return; // zona morph: scroll livre
       const next = currentIdx.current + (e.deltaY > 0 ? 1 : -1);
       if (next < 0 || next >= SNAP_IDS.length) return;
       e.preventDefault();
@@ -74,6 +82,7 @@ function App() {
     let startY = 0;
     const onStart = (e: TouchEvent) => { startY = e.touches[0].clientY; };
     const onEnd   = (e: TouchEvent) => {
+      if (c.scrollTop >= getSnapTop("s4", c)) return; // zona morph: livre
       const d = startY - e.changedTouches[0].clientY;
       if (Math.abs(d) > 50) goto(currentIdx.current + (d > 0 ? 1 : -1));
     };
@@ -84,6 +93,8 @@ function App() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const c = containerRef.current;
+      if (c && c.scrollTop >= getSnapTop("s4", c)) return; // zona morph: livre
       if (e.key === "ArrowDown" || e.key === "PageDown") { e.preventDefault(); goto(currentIdx.current + 1); }
       if (e.key === "ArrowUp"   || e.key === "PageUp"  ) { e.preventDefault(); goto(currentIdx.current - 1); }
     };
@@ -108,6 +119,9 @@ function App() {
 
       {/* Snap 3 — Stats */}
       <div id="s3"><Stats /></div>
+
+      {/* Snap 4 → Morph (ao chegar aqui, scroll vira livre) */}
+      <TruthMorphSection scrollContainer={containerRef} />
     </div>
   );
 }

@@ -1,11 +1,36 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip,
+  ResponsiveContainer, Cell,
+} from "recharts";
 
-const data = [
-  { time: "5 min",   context: "Ideal",       loss: null, visualPct: 100, color: "#253FF6", shadow: "rgba(37,63,246,0.3)",  tag: "rgba(37,63,246,0.1)",  tagText: "#253FF6"  },
-  { time: "30 min",  context: "Aceitável",   loss: 79,   visualPct: 48,  color: "#F59E0B", shadow: "rgba(245,158,11,0.25)", tag: "rgba(245,158,11,0.12)", tagText: "#B45309"  },
-  { time: "1 hora",  context: "Crítico",     loss: 95,   visualPct: 20,  color: "#EF4444", shadow: "rgba(239,68,68,0.25)",  tag: "rgba(239,68,68,0.1)",  tagText: "#B91C1C"  },
-  { time: "+1 hora", context: "Perda certa", loss: 99,   visualPct: 10,  color: "#991B1B", shadow: "rgba(153,27,27,0.3)",   tag: "rgba(153,27,27,0.1)",  tagText: "#7F1D1D"  },
+const chartData = [
+  { label: "5 min",    pct: 100 },
+  { label: "30 min",   pct: 54  },
+  { label: "1 hora",   pct: 22  },
+  { label: "+1 hora",  pct: 8   },
 ];
+
+const barColors = ["#253FF6", "#6B7FF8", "#F59E0B", "#EF4444"];
+
+function CustomTooltip({ active, payload, label }: any) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div style={{
+      background: "#fff",
+      border: "1px solid #e5e7eb",
+      borderRadius: 8,
+      padding: "10px 14px",
+      boxShadow: "0 8px 24px rgba(0,0,0,0.1)",
+    }}>
+      <p style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>{label}</p>
+      <p style={{ fontSize: 18, fontWeight: 800, color: "#253FF6" }}>
+        {payload[0].value}%{" "}
+        <span style={{ fontSize: 12, fontWeight: 400, color: "#666" }}>de chance</span>
+      </p>
+    </div>
+  );
+}
 
 export default function ResponseChart() {
   const ref = useRef<HTMLElement>(null);
@@ -16,97 +41,113 @@ export default function ResponseChart() {
     if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setVisible(true); obs.disconnect(); }
-    }, { threshold: 0.2 });
+    }, { threshold: 0.15 });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
 
-  const CHART_H = 280;
+  const reveal = (delay: number): React.CSSProperties => ({
+    opacity: visible ? 1 : 0,
+    transform: visible ? "translateY(0)" : "translateY(24px)",
+    transition: `opacity 0.6s ease ${delay}s, transform 0.6s ease ${delay}s`,
+  });
 
   return (
-    <section ref={ref} className="w-full bg-white">
-      <div className="container-content py-20 md:py-25">
+    <section
+      ref={ref}
+      className="w-full bg-white"
+      style={{ minHeight: "100dvh", display: "flex", alignItems: "center" }}
+    >
+      <div className="container-content py-20 md:py-25 w-full">
+        <div
+          className="grid items-center gap-16"
+          style={{ gridTemplateColumns: "1fr 1fr" }}
+        >
 
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2
-            className="font-bold text-2xl md:text-5xl leading-snug mb-3 title-gradient"
-            style={{
-              WebkitTextFillColor: "transparent",
-              opacity: 0,
-              animation: visible ? "fade-up 0.6s cubic-bezier(0.22,1,0.36,1) 0ms forwards" : "none",
-            }}
-          >
-            Quanto tempo você demora para responder?
-          </h2>
-          <p
-            className="font-light text-sm md:text-base text-brand-navy/50"
-            style={{
-              opacity: 0,
-              animation: visible ? "fade-up 0.6s cubic-bezier(0.22,1,0.36,1) 150ms forwards" : "none",
-            }}
-          >
-            Chance relativa de converter um paciente por tempo de resposta
-          </p>
-        </div>
+          {/* Coluna esquerda — gráfico */}
+          <div style={reveal(0)}>
+            <p style={{
+              fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase",
+              color: "#253FF6", marginBottom: 8,
+            }}>
+              Chance de conversão (%)
+            </p>
+            <p style={{ fontSize: 13, color: "#131B54", opacity: 0.4, marginBottom: 28 }}>
+              por tempo de resposta ao paciente
+            </p>
 
-        {/* Gráfico */}
-        <div className="max-w-xl mx-auto">
-          {/* Barras — alinhadas pela base */}
-          <div className="flex items-end justify-center gap-6" style={{ height: CHART_H }}>
-            {data.map(({ visualPct, color, shadow }, i) => {
-              const barH = (visualPct / 100) * CHART_H;
-              const isMain = i === 0;
-              const delay = 350 + i * 130;
-              return (
-                <div
-                  key={i}
-                  className="rounded-t-xl relative overflow-hidden flex-shrink-0"
-                  style={{
-                    width: 100,
-                    height: barH,
-                    background: isMain ? `linear-gradient(180deg, ${color} 0%, #131B54 100%)` : color,
-                    transform: visible ? "scaleY(1)" : "scaleY(0)",
-                    transformOrigin: "bottom",
-                    transition: `transform 0.8s cubic-bezier(0.22,1,0.36,1) ${delay}ms`,
-                    boxShadow: `0 8px 28px ${shadow}`,
-                  }}
-                >
-                  <div className="absolute inset-x-0 top-0 h-8 rounded-t-xl"
-                    style={{ background: "linear-gradient(180deg, rgba(255,255,255,0.18) 0%, transparent 100%)" }}
-                  />
-                </div>
-              );
-            })}
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={chartData} barCategoryGap="28%" margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+                <XAxis
+                  dataKey="label"
+                  tick={{ fontSize: 11, fill: "#888", fontFamily: "Red Hat Display" }}
+                  axisLine={false} tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontSize: 11, fill: "#888", fontFamily: "Red Hat Display" }}
+                  axisLine={false} tickLine={false}
+                  tickFormatter={(v) => `${v}%`}
+                  domain={[0, 100]}
+                />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "transparent" }} />
+                <Bar dataKey="pct" radius={[6, 6, 0, 0]}>
+                  {chartData.map((_, i) => (
+                    <Cell key={i} fill={barColors[i]} fillOpacity={1 - i * 0.08} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+
+            <p style={{ fontSize: 11, color: "#131B54", opacity: 0.25, marginTop: 16 }}>
+              Fonte: Harvard Business Review · MIT Lead Response Management Study
+            </p>
           </div>
 
-          {/* Labels — abaixo das barras, mesma largura e gap */}
-          <div
-            className="flex justify-center gap-6 mt-3"
-            style={{
-              opacity: 0,
-              animation: visible ? "fade-up 0.5s cubic-bezier(0.22,1,0.36,1) 900ms forwards" : "none",
-            }}
-          >
-            {data.map(({ time, context, loss, tag, tagText }, i) => (
-              <div key={i} className="flex flex-col items-center gap-1.5" style={{ width: 100 }}>
-                <span className="font-bold text-sm text-brand-navy text-center">{time}</span>
-                <span className="text-xs font-medium px-2 py-0.5 rounded-full text-center" style={{ background: tag, color: tagText }}>
-                  {context}
-                </span>
-                {loss !== null && (
-                  <span className="text-xs font-bold text-center" style={{ color: tagText }}>
-                    −{loss}% das chances
-                  </span>
-                )}
+          {/* Coluna direita — texto */}
+          <div>
+            <p style={{ ...reveal(0.1), fontSize: 11, letterSpacing: "0.2em", textTransform: "uppercase", color: "#253FF6", marginBottom: 16 }}>
+              O que os dados mostram
+            </p>
+
+            <h2
+              className="font-bold leading-snug title-gradient"
+              style={{
+                ...reveal(0.2),
+                fontSize: "clamp(28px, 3.5vw, 48px)",
+                WebkitTextFillColor: "transparent",
+                marginBottom: 24,
+              }}
+            >
+              Quanto tempo você demora para responder?
+            </h2>
+
+            <p style={{ ...reveal(0.3), fontSize: 16, color: "#131B54", opacity: 0.55, lineHeight: 1.75, marginBottom: 20 }}>
+              Um paciente que recebe resposta em até <strong style={{ color: "#131B54", opacity: 1 }}>5 minutos tem 3× mais chance de agendar</strong>. Ignorado por mais de 1 hora, esse paciente já foi para o concorrente.
+            </p>
+
+            <p style={{ ...reveal(0.4), fontSize: 16, color: "#131B54", opacity: 0.55, lineHeight: 1.75, marginBottom: 36 }}>
+              Não é a qualidade do atendimento que está em jogo — é o tempo de resposta que define quem fica e quem vai embora.
+            </p>
+
+            {/* Stat destaque */}
+            <div style={{
+              ...reveal(0.5),
+              display: "flex", alignItems: "flex-start", gap: 20,
+              padding: "22px 24px", borderRadius: 12,
+              border: "1px solid rgba(37,63,246,0.15)",
+              background: "rgba(37,63,246,0.04)",
+            }}>
+              <div style={{ flexShrink: 0 }}>
+                <p style={{ fontSize: 36, fontWeight: 800, color: "#253FF6", lineHeight: 1 }}>67%</p>
+                <p style={{ fontSize: 12, color: "#131B54", opacity: 0.35, marginTop: 4 }}>dos pacientes</p>
               </div>
-            ))}
+              <p style={{ fontSize: 15, color: "#131B54", opacity: 0.55, lineHeight: 1.65 }}>
+                que não recebem resposta em menos de 1 hora marcam consulta em outra clínica — e raramente voltam.
+              </p>
+            </div>
           </div>
+
         </div>
-
-        <p className="text-xs text-center mt-10 text-brand-navy/30">
-          Fonte: Harvard Business Review / MIT Lead Response Management Study
-        </p>
-
       </div>
     </section>
   );
