@@ -66,7 +66,7 @@ export default function TruthSection({ onRevealReady }: Props) {
           position: "absolute", inset: 0,
           display: "flex", alignItems: "center", justifyContent: "center",
           padding: "0 24px",
-          background: "#0A0B0B",
+          background: "#05071B",
           opacity: 0,
           pointerEvents: "none",
         }}
