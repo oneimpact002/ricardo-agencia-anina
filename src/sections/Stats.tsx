@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const stats = [
   { n: 73,  suffix: "%",  desc: "dos usuários não voltam a engajar com marcas que demoram a responder no WhatsApp" },
