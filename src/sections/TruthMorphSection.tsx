@@ -50,19 +50,28 @@ export default function TruthSection({ onRevealReady }: Props) {
     if (!overlay) return;
     const section = overlay.closest("#s4") as HTMLElement;
     if (!section) return;
+    const scroller = section.parentElement as HTMLElement;
+
     const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        overlay.style.transition = "opacity 0.7s cubic-bezier(0.22,1,0.36,1)";
-        overlay.style.opacity = "1";
-        overlay.style.pointerEvents = "auto";
-        overlay.querySelectorAll<HTMLElement>(".morph-word").forEach((span, i) => {
-          span.style.animation = `fade-only 0.5s ease ${0.35 + i * 0.07}s forwards`;
-        });
-        const sub = overlay.querySelector<HTMLElement>(".morph-sub");
-        if (sub) sub.style.opacity = "1";
-        obs.disconnect();
-      }
+      if (!e.isIntersecting) return;
+      obs.disconnect();
+
+      // Trava o scroll durante a animação
+      const blocker = (ev: TouchEvent) => ev.preventDefault();
+      scroller?.addEventListener("touchmove", blocker, { passive: false });
+      setTimeout(() => scroller?.removeEventListener("touchmove", blocker), 1600);
+
+      // Revela 4b
+      overlay.style.transition = "opacity 0.7s cubic-bezier(0.22,1,0.36,1)";
+      overlay.style.opacity = "1";
+      overlay.style.pointerEvents = "auto";
+      overlay.querySelectorAll<HTMLElement>(".morph-word").forEach((span, i) => {
+        span.style.animation = `fade-only 0.5s ease ${0.35 + i * 0.07}s forwards`;
+      });
+      const sub = overlay.querySelector<HTMLElement>(".morph-sub");
+      if (sub) sub.style.opacity = "1";
     }, { threshold: 0.5 });
+
     obs.observe(section);
     return () => obs.disconnect();
   }, []);
