@@ -22,6 +22,7 @@ function App() {
   const s4bVisible   = useRef(false);
   const revealFn     = useRef<(() => void) | null>(null);
   const hideFn       = useRef<(() => void) | null>(null);
+  const isMobile     = useRef(window.innerWidth < 768);
 
   const onRevealReady = useCallback((reveal: () => void, hide: () => void) => {
     revealFn.current = reveal;
@@ -86,6 +87,7 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (isMobile.current) return;
     const c = containerRef.current;
     if (!c) return;
     const onWheel = (e: WheelEvent) => {
@@ -97,6 +99,7 @@ function App() {
   }, [scrollDown, scrollUp]);
 
   useEffect(() => {
+    if (isMobile.current) return;
     const c = containerRef.current;
     if (!c) return;
     let startY = 0;
@@ -111,6 +114,7 @@ function App() {
   }, [scrollDown, scrollUp]);
 
   useEffect(() => {
+    if (isMobile.current) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowDown" || e.key === "PageDown") { e.preventDefault(); scrollDown(); }
       if (e.key === "ArrowUp"   || e.key === "PageUp"  ) { e.preventDefault(); scrollUp(); }

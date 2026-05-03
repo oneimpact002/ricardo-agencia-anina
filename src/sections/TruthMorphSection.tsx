@@ -44,6 +44,29 @@ export default function TruthSection({ onRevealReady }: Props) {
     onRevealReady(reveal, hide);
   }, [onRevealReady]);
 
+  useEffect(() => {
+    if (window.innerWidth >= 768) return;
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+    const section = overlay.closest("#s4") as HTMLElement;
+    if (!section) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) {
+        overlay.style.transition = "opacity 0.7s cubic-bezier(0.22,1,0.36,1)";
+        overlay.style.opacity = "1";
+        overlay.style.pointerEvents = "auto";
+        overlay.querySelectorAll<HTMLElement>(".morph-word").forEach((span, i) => {
+          span.style.animation = `fade-only 0.5s ease ${0.35 + i * 0.07}s forwards`;
+        });
+        const sub = overlay.querySelector<HTMLElement>(".morph-sub");
+        if (sub) sub.style.opacity = "1";
+        obs.disconnect();
+      }
+    }, { threshold: 0.5 });
+    obs.observe(section);
+    return () => obs.disconnect();
+  }, []);
+
   return (
     <div id="s4" style={{ position: "relative", height: "100dvh", background: "#fff" }}>
 
